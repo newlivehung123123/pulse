@@ -1,0 +1,4 @@
+Source: AEI China Global Investment Tracker interactive tool data files
+URL: https://kristol2021live.aei.org/plzchina/infographics/worldinvestments/{investment,construction}.csv
+Downloaded: 2026-07-02
+Citation: American Enterprise Institute and Heritage Foundation, China Global Investment Tracker, January 2025.

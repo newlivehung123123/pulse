@@ -1,0 +1,16 @@
+# Raw OpenINTEL forward-DNS parquet — ~108 GB, not committed (download from openintel.nl)
+OpenINTEL/
+**/*.parquet
+
+# External tool clone + Python virtualenv
+cdn-check/
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Machine-specific build state (resume checkpoints)
+.state_*.txt
+
+# macOS
+.DS_Store
