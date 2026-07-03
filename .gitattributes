@@ -1,0 +1,4 @@
+# The committed CSV datasets under data/ are produced by the scripts in scripts/.
+# Mark them as generated so GitHub excludes them from language statistics and
+# collapses them in diffs (they are data outputs, not source code).
+data/**/*.csv linguist-generated=true
