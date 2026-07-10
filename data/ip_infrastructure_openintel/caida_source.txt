@@ -1,0 +1,47 @@
+CAIDA AS Organizations Dataset — monthly snapshots for the OpenINTEL longitudinal window
+=========================================================================================
+
+Source directory : https://publicdata.caida.org/datasets/as-organizations/
+File pattern      : YYYYMMDD.as-org2info.txt.gz  (snapshot on the 1st of each month)
+Downloaded on     : 2026-07-10
+Downloaded by     : direct HTTPS fetch from the CAIDA public-data server (curl)
+
+Why these 16 snapshots
+----------------------
+The OpenINTEL IP-infrastructure datasets in ../OpenINTEL_sea_output cover the measurement
+months 202503 through 202606 (16 months). CAIDA publishes one AS-org snapshot per month,
+so ONE snapshot is downloaded per OpenINTEL measurement month, to map each row's ASN with
+the CAIDA snapshot that is contemporaneous with that row's month (a longitudinal mapping,
+not a single-snapshot approximation):
+
+  OpenINTEL month  ->  CAIDA snapshot
+  202503               20250301.as-org2info.txt.gz
+  202504               20250401.as-org2info.txt.gz
+  202505               20250501.as-org2info.txt.gz
+  202506               20250601.as-org2info.txt.gz
+  202507               20250701.as-org2info.txt.gz
+  202508               20250801.as-org2info.txt.gz
+  202509               20250901.as-org2info.txt.gz
+  202510               20251001.as-org2info.txt.gz
+  202511               20251101.as-org2info.txt.gz
+  202512               20251201.as-org2info.txt.gz
+  202601               20260101.as-org2info.txt.gz
+  202602               20260201.as-org2info.txt.gz
+  202603               20260301.as-org2info.txt.gz
+  202604               20260401.as-org2info.txt.gz
+  202605               20260501.as-org2info.txt.gz
+  202606               20260601.as-org2info.txt.gz
+
+All 16 files were integrity-checked with `gzip -t` (all OK) after download.
+
+File format (pipe-delimited, two sections)
+-------------------------------------------
+  Org section:  org_id | changed | org_name | country | source
+  AS  section:  aut(ASN) | changed | aut_name | org_id | opaque_id | source
+An ASN is mapped to a provider by: ASN -> org_id (AS section) -> org_name (Org section),
+with the short AS name (aut_name) as a fallback.
+
+Citation
+--------
+The CAIDA AS Organizations Dataset, <snapshot dates listed above>.
+https://www.caida.org/catalog/datasets/as-organizations/

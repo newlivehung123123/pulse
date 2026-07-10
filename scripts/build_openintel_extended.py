@@ -55,9 +55,12 @@ OPENINTEL_DIR = os.path.join(BASE, "OpenINTEL")
 CRUX_CSV = os.path.join(BASE, "Crux_top_1000_202401_202605.csv")
 DEFAULT_OUTDIR = os.path.join(BASE, "OpenINTEL_sea_output")
 
-COUNTRY_CODE = {"Malaysia": "MY", "Singapore": "SG", "Thailand": "TH", "Indonesia": "ID"}
+COUNTRY_CODE = {"Malaysia": "MY", "Singapore": "SG", "Thailand": "TH", "Indonesia": "ID", "Philippines": "PH",
+                "Vietnam": "VN", "Brunei": "BN", "Cambodia": "KH", "Laos": "LA", "Myanmar": "MM"}
 CRUX_LAST_MONTH = "202605"   # newest CrUX top-1000 list available; used as fallback for 202606
-MIN_FREE_MB = 300            # stop safely if free disk drops below this
+MIN_FREE_MB = 100            # stop safely if free disk drops below this
+BATCH_ROWS = 100000          # rows read into RAM at a time; streaming keeps memory low so a
+#                              near-full disk is not filled by macOS swap on large parquet files
 
 READ_COLUMNS = ["query_name", "response_type", "ip4_address", "country", "as", "timestamp"]
 OUT_HEADER = ["country", "measurement_period", "website", "website_rank",
@@ -110,7 +113,11 @@ def process_country(country_name, crux, outdir, limit_files):
             writer.writerow(OUT_HEADER)
             out_f.flush()
 
-        for month_dir in sorted(glob.glob(os.path.join(country_root, f"{cc}_*"))):
+        # month folders may be nested (OpenINTEL/<Country>/<CC>_YYYY_MM) or flat (OpenINTEL/<CC>_YYYY_MM)
+        month_dirs = sorted(glob.glob(os.path.join(country_root, f"{cc}_*")))
+        if not month_dirs:
+            month_dirs = sorted(glob.glob(os.path.join(OPENINTEL_DIR, f"{cc}_*")))
+        for month_dir in month_dirs:
             if not os.path.isdir(month_dir):
                 continue
             mp = month_of_folder(os.path.basename(month_dir))
@@ -137,32 +144,36 @@ def process_country(country_name, crux, outdir, limit_files):
                           f"Free space and re-run to resume {cc} from here.")
                     return "lowdisk", total_rows, files_done
 
-                table = pq.ParquetFile(pfile).read(columns=READ_COLUMNS)
-                qn_lower = pc.utf8_lower(table["query_name"])
-                mask = pc.and_(
-                    pc.equal(table["response_type"], "A"),
-                    pc.and_(pc.is_valid(table["ip4_address"]),
-                            pc.is_in(qn_lower, value_set=value_arr)),
-                )
-                sub = table.filter(mask)
-
-                qn = sub["query_name"].to_pylist()
-                ip = sub["ip4_address"].to_pylist()
-                ctry = sub["country"].to_pylist()
-                asn = sub["as"].to_pylist()
-                ts = sub["timestamp"].to_pylist()
-
+                # Stream the file in batches of BATCH_ROWS instead of loading all ~1.1M rows
+                # at once, so peak RAM stays low and macOS does not swap-fill a near-full disk.
                 n = 0
-                for j in range(len(qn)):
-                    host = (qn[j] or "").rstrip(".").lower()
-                    rank = hosts.get(host)
-                    if rank is None:
-                        continue
-                    day = datetime.datetime.fromtimestamp(ts[j] / 1000, datetime.timezone.utc).strftime("%Y-%m-%d")
-                    writer.writerow([cc, mp, host, rank, "", "",
-                                     ctry[j] or "", asn[j] or "", ip[j] or "",
-                                     "OpenINTEL CrUX", day])
-                    n += 1
+                for batch in pq.ParquetFile(pfile).iter_batches(batch_size=BATCH_ROWS, columns=READ_COLUMNS):
+                    table = pa.Table.from_batches([batch])
+                    qn_lower = pc.utf8_lower(table["query_name"])
+                    mask = pc.and_(
+                        pc.equal(table["response_type"], "A"),
+                        pc.and_(pc.is_valid(table["ip4_address"]),
+                                pc.is_in(qn_lower, value_set=value_arr)),
+                    )
+                    sub = table.filter(mask)
+
+                    qn = sub["query_name"].to_pylist()
+                    ip = sub["ip4_address"].to_pylist()
+                    ctry = sub["country"].to_pylist()
+                    asn = sub["as"].to_pylist()
+                    ts = sub["timestamp"].to_pylist()
+
+                    for j in range(len(qn)):
+                        host = (qn[j] or "").rstrip(".").lower()
+                        rank = hosts.get(host)
+                        if rank is None:
+                            continue
+                        day = datetime.datetime.fromtimestamp(ts[j] / 1000, datetime.timezone.utc).strftime("%Y-%m-%d")
+                        writer.writerow([cc, mp, host, rank, "", "",
+                                         ctry[j] or "", asn[j] or "", ip[j] or "",
+                                         "OpenINTEL CrUX", day])
+                        n += 1
+                    del table, sub, qn, ip, ctry, asn, ts
 
                 out_f.flush()
                 st_f.write(pfile + "\n")
@@ -172,8 +183,6 @@ def process_country(country_name, crux, outdir, limit_files):
                 files_done += 1
                 print(f"  {cc} {os.path.basename(month_dir)} "
                       f"{os.path.basename(pfile)[:22]} -> {n} rows  (cum {total_rows})")
-
-                del table, sub, qn, ip, ctry, asn, ts
 
                 if limit_files and files_done >= limit_files:
                     return "limit", total_rows, files_done
