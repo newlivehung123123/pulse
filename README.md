@@ -83,7 +83,7 @@ pulse/
     │   └── Crux_top_1000_202401_202605.csv           # domain frame: 10 countries × 29 months × 1000
     ├── cdn_nedko/
     │   └── nedko_<cc>_202401_202605.csv               # CDN provider + IP per domain (10 SEA countries)
-    ├── provider_legal_names.csv                       # unique CDN + IP providers, legal names & sources (750 rows)
+    ├── provider_legal_names.csv                       # manually-verified CDN provider legal names + jurisdiction (27 CDN providers)
     ├── ip_infrastructure_openintel/
     │   ├── openintel_ip_infrastructure_extended_<cc>.csv.gz  # IP/ASN/provider/jurisdiction per domain-day (10 countries, gzipped)
     │   └── caida_source.txt                           # CAIDA snapshot provenance (month-matched 202503–202606)
@@ -125,9 +125,10 @@ AS-org snapshots (re-downloadable — see `caida_source.txt`), and the `cdn-chec
    countries, 2023–2025) to one row per country × year × investment/construction.
    → `data/dsr_aei/AEI.sea.output.csv`.
 
-5. **Provider reference — `data/provider_legal_names.csv`** lists every unique provider across the
-   three datasets (27 CDN providers from Nedko/ISOC with manually-verified legal names; 721
-   IP-infrastructure providers from CAIDA), with the source document/dataset for each.
+5. **Provider reference — `data/provider_legal_names.csv`** lists the 27 CDN providers (Nedko/ISOC) with
+   manually-verified legal names, jurisdiction, and supporting documentation (ToS / registry / SEC /
+   OpenCorporates). IP-infrastructure provider names and jurisdictions are carried in the
+   `ip_infrastructure_openintel` datasets themselves (mapped from CAIDA), not duplicated here.
 
 6. **Analysis (pending, not in repo).** Classified data feeds Gini/HHI concentration (RQ1/RQ2) and the
    lagged panel regression of Chinese CDN/IP concentration on CGIT DSR investment (RQ3), in STATA.
@@ -149,7 +150,10 @@ infrastructure_jurisdiction, infrastructure_country, as_number, ip_address, sour
 - `infrastructure_country` — OpenINTEL's **geolocation of the IP** (where the server sits), a *different* thing.
 
 **`data/provider_legal_names.csv`**
-`#, CDN Provider, Company Website, Documentation Checked, Actual Legal Name, Data Source`
+`#, CDN Provider, Company Website, Documentation Checked, Actual Legal Name, Data Source, Jurisdiction, OpenCorporate Result`
+— the 27 CDN providers (Nedko/ISOC) with manually-verified legal names, jurisdiction, and supporting
+documentation (ToS / registry / SEC / OpenCorporates). IP-infrastructure provider names and jurisdictions
+are **not** repeated here — they live in the `ip_infrastructure_openintel` datasets (mapped from CAIDA).
 
 **`data/dsr_aei/AEI.sea.output.csv`**
 `country, year, projects, amount, type` — full country × year × type grid; `amount` in US$ millions.
@@ -188,7 +192,7 @@ infrastructure_jurisdiction, infrastructure_country, as_number, ip_address, sour
 | IP infrastructure (OpenINTEL) | all 10 SEA countries, 2025-03…2026-06 | complete |
 | IP provider mapping (CAIDA AS-org) | all 10 | complete |
 | IP jurisdiction mapping (CAIDA registered country — **proxy**) | all 10 | complete (see limitations) |
-| Provider legal names | 27 CDN (verified) + 721 IP (CAIDA org name) | partial (OpenCorporates lookup pending) |
+| CDN provider legal names + jurisdiction | 27 CDN providers (Nedko/ISOC), manually verified | complete |
 | DSR (AEI CGIT) | 10 SEA countries, 2023–2025, technology | complete |
 | CDN controlling-ownership jurisdiction | — | pending (manual) |
 | Gini / HHI + panel regression | — | pending |
