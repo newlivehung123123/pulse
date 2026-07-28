@@ -2,3 +2,10 @@
 # Mark them as generated so GitHub excludes them from language statistics and
 # collapses them in diffs (they are data outputs, not source code).
 data/**/*.csv linguist-generated=true
+data/**/*.csv.gz linguist-generated=true binary
+data/caida_as_org/*.gz binary
+
+# Empirical outputs (figures and tables) are produced by scripts/ as well.
+outputs/** linguist-generated=true
+outputs/**/*.png binary
+outputs/**/*.docx binary
