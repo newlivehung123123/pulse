@@ -1,24 +1,26 @@
 # Pulse Research Fellowship — Chinese CDN & IP-Infrastructure Concentration in Southeast Asia
 
-Data, pipeline and empirical outputs for a study measuring the **market concentration of Chinese-
-versus American-jurisdiction Content Delivery Network (CDN) and IP-infrastructure providers** serving
-the ten Southeast Asian (SEA) countries, and its association with China's **Digital Silk Road (DSR)**
-investment.
+Data, pipeline and empirical outputs for a six-month research study measuring the **market
+concentration of Chinese- (relative to American-) jurisdiction Content Delivery Network (CDN) and
+IP-infrastructure providers** serving the 10 Southeast Asian (SEA) countries, and its association
+with China's **Digital Silk Road (DSR)** investment.
 
-> **Status — complete.** Measurement, jurisdiction mapping, concentration analysis (Gini/HHI) and the
-> RQ3 panel regressions are all finished and deposited here. The full output of this project is in
-> two parts: the **methodology and empirical materials, which are publicly accessible in this
-> repository**, and the **research paper, which is work in progress**.
+> **Status — complete.** Measurement, jurisdiction mapping, concentration analysis (Gini/HHI) and
+> panel regression analysis are all finished and deposited in this repository. The full outputs of
+> this project encompass the **(1) methodology** and **(2) empirical materials**, which are publicly
+> accessible in this repository, and the **(3) research paper**, which is currently work in progress.
 
-Author and sole contributor: **Jason Hung**.
+Author and primary contributor: **Jason Hung**  
+Mentor: **Cecilia Testart**  
+Advisors: **Amreesh Phokeer** & **Hanna Kreitem**
 
 ---
 
 ## Research aim & questions
 
-Quantify and analyse the market concentration of Chinese CDN and IP-infrastructure providers in
-Southeast Asia, especially relative to their American counterparts, and study any association with
-China's DSR activity.
+Quantify and analyse the market concentration of Chinese CDN and IP-infrastructure providers in SEA,
+especially relative to their American counterparts, and study any association with China's DSR
+activity.
 
 - **RQ1** — To what extent are Chinese Internet infrastructure providers (CDN and IP infrastructure)
   concentrated in SEA markets, as measured by the **Gini coefficient**?
@@ -67,7 +69,7 @@ data/cdn_nedko/  data/cdn_isoc/    data/ip_infrastructure_openintel/   data/dsr_
             │                                                                 │
             └──────────────────────┬──────────────────────────────────────────┘
                                    ▼
-                    build_rq3_regression.py  (Models 1, 2)
+                    build_rq3_regression.py  (Models 1a, 2)
                     build_rq3_isoc.py        (Model 1b)
                     diagnose_rq3.py          (small-cluster robustness)
                     CDN_China / IP_China on lagged CGIT  (RQ3)
@@ -94,7 +96,7 @@ pulse/
 │   ├── map_jurisdiction_caida_sea.py # ASN → infrastructure_jurisdiction  (CAIDA registered country)
 │   ├── build_aei_sea.py              # DSR aggregation from AEI CGIT
 │   ├── analysis_concentration.py     # Gini + HHI, by provider and jurisdiction (RQ1, RQ2)
-│   ├── build_rq3_regression.py       # panel regression Models 1 & 2 (RQ3)
+│   ├── build_rq3_regression.py       # panel regression Models 1a & 2 (RQ3)
 │   ├── build_rq3_isoc.py             # panel regression Model 1b, ISOC CDN source (RQ3)
 │   └── diagnose_rq3.py               # wild cluster bootstrap + leave-one-country-out
 ├── data/
