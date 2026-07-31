@@ -8,7 +8,8 @@ with China's **Digital Silk Road (DSR)** investment.
 > **Status — complete.** Measurement, jurisdiction mapping, concentration analysis (Gini/HHI) and
 > panel regression analysis are all finished and deposited in this repository. The full outputs of
 > this project encompass the **(1) methodology** and **(2) empirical materials**, which are publicly
-> accessible in this repository, and the **(3) research paper**, which is currently work in progress.
+> accessible in this repository, and the **(3) research paper**, deposited here as
+> [`research_paper.pdf`](research_paper.pdf).
 
 Author and primary contributor: **Jason Hung**  
 Mentor: **Cecilia Testart**  
@@ -84,6 +85,7 @@ data/cdn_nedko/  data/cdn_isoc/    data/ip_infrastructure_openintel/   data/dsr_
 ```
 pulse/
 ├── README.md
+├── research_paper.pdf                             # the full research paper (preprint)
 ├── METHODOLOGY_WORKFLOW.md                        # aim → objectives → measurement → outputs
 ├── MEASUREMENT.md                                 # how each metric and variable is computed
 ├── CAIDA_jurisdiction_mapping_METHODOLOGY.md      # ASN → jurisdiction mapping + its limitation
@@ -246,7 +248,7 @@ throughout, so the choice of estimator is not what drives the result.
 | DSR (AEI CGIT) | 10 countries, 2023–2025, technology | complete |
 | Gini / HHI concentration (RQ1, RQ2) | 3 sources × 2 metrics × 2 dimensions | complete |
 | Panel regression (RQ3) | Models 1, 1b, 2 + robustness | complete (null; underpowered) |
-| Research paper | — | work in progress |
+| Research paper | preprint, `research_paper.pdf` | complete |
 
 ---
 
